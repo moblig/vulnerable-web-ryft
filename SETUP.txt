@@ -1,0 +1,180 @@
+================================================================================
+RIFT SCANNER - VULNERABLE TEST LAB
+Version: 1.0
+Location: /Users/mariomejia/vuln-web
+================================================================================
+
+PROJECT STRUCTURE
+=================
+
+/Users/mariomejia/vuln-web/
+├── app.py                        - Flask application with vulnerabilities
+├── requirements.txt              - Python dependencies
+├── Dockerfile                    - Docker container definition
+├── docker-compose.yml            - Docker Compose orchestration
+├── test-vulnerabilities.sh       - Automated vulnerability test suite
+├── README.md                     - Complete documentation
+├── RIFT-INTEGRATION.md           - How to integrate with Rift scanner
+└── SETUP.txt                     - This file
+
+QUICK START
+===========
+
+1. Start the vulnerable app:
+   $ cd /Users/mariomejia/vuln-web
+   $ docker-compose up -d
+
+2. Verify it's running:
+   $ curl http://localhost:5000
+
+3. Run the test suite:
+   $ bash test-vulnerabilities.sh
+
+4. Scan with nuclei:
+   $ nuclei -u http://localhost:5000 -tags xss,sqli,idor -v
+
+5. View results:
+   $ cat /tmp/rift-vuln-test-results.txt
+
+WHAT'S INCLUDED
+===============
+
+✓ Reflected XSS          - User input echoed without sanitization
+✓ Stored XSS             - Comments stored in memory and displayed
+✓ Path Traversal         - Read-only access to mock configuration files
+✓ SQL Injection          - Vulnerable search endpoint
+✓ IDOR                   - Insecure Direct Object Reference on users
+✓ Default Credentials    - Weak login (admin/admin123)
+✓ Sensitive Data         - API endpoints leak config/secrets
+✓ Broken Auth            - Weak password verification
+✓ Information Disclosure - Debug endpoints, robots.txt, sitemap.xml
+
+SAFETY GUARANTEES
+=================
+
+✗ No RCE                 - Cannot execute system commands
+✗ No SSRF                - Cannot make requests to internal services
+✗ No Real File Access    - All files are mocked in memory
+✗ No Database Access     - In-memory fake database only
+✗ No Infrastructure Risk - Completely isolated application
+
+RUNNING WITHOUT DOCKER
+======================
+
+$ pip install -r requirements.txt
+$ python app.py
+
+App runs on http://localhost:5000
+
+ENDPOINTS REFERENCE
+===================
+
+GET  /                          Home page with vulnerability links
+GET  /xss/reflected             Reflected XSS test
+POST /xss/stored                Stored XSS test
+GET  /files                     Path traversal to mock files
+GET  /search                    SQL injection search
+GET  /user/<id>                 IDOR vulnerability
+GET  /login, POST /login        Default credentials test
+GET  /api/debug                 Sensitive data exposure
+GET  /api/config                Configuration leakage
+GET  /sitemap.xml               Information disclosure
+GET  /robots.txt                Information disclosure
+
+TEST CREDENTIALS
+================
+
+admin / admin123
+user1 / password123
+user2 / pass456
+
+MOCK FILES AVAILABLE
+====================
+
+Access via: http://localhost:5000/files?file=<filename>
+
+- config.yaml              Database and API credentials
+- secrets.env              Environment variables with secrets
+- debug.log                Debug information
+- users.json               User data in JSON
+- backup.sql               Database backup
+
+EXPECTED FINDINGS
+=================
+
+When running Rift scanner against this lab, you should detect:
+
+  ✓ 1-3     Reflected XSS
+  ✓ 1-2     Stored XSS
+  ✓ 3-5     Path Traversal (5 mock files)
+  ✓ 2-3     SQL Injection
+  ✓ 3       IDOR (3 users)
+  ✓ 2       Sensitive Data Exposure
+  ✓ 1-2     Default Credentials
+  ✓ 2       Information Disclosure
+  ─────────────────
+    ~18-21  Total vulnerabilities
+
+INTEGRATION EXAMPLES
+====================
+
+# Test with httpx + nuclei (Rift flow)
+httpx -u http://localhost:5000 -sc
+nuclei -u http://localhost:5000 -tags xss,sqli,idor -v
+
+# Test with FFUF + nuclei
+ffuf -u http://localhost:5000/FUZZ -w wordlist.txt
+nuclei -u http://localhost:5000 -tags xss,sqli -v
+
+# Comprehensive nuclei scan
+nuclei -u http://localhost:5000 \
+  -tags cve,sqli,xss,idor,auth,default-login,exposure,disclosure \
+  -severity critical,high \
+  -json -o results.json
+
+CLEANUP
+=======
+
+# Stop containers
+$ docker-compose down
+
+# Remove image
+$ docker rmi vuln-web:latest
+
+# Remove everything
+$ docker-compose down -v
+
+DOCUMENTATION
+==============
+
+- README.md              Complete setup and usage guide
+- RIFT-INTEGRATION.md    How to integrate with Rift scanner
+- app.py                 Source code with detailed comments
+
+FILES TO STUDY
+==============
+
+Start with: README.md
+Then read: RIFT-INTEGRATION.md
+Reference: app.py (for implementation details)
+
+SUPPORT & TROUBLESHOOTING
+==========================
+
+Issue: App won't start
+Fix: Check port 5000 is free (lsof -i :5000)
+
+Issue: Nuclei finds no vulnerabilities
+Fix: Update nuclei templates (nuclei -update)
+
+Issue: Want to reset the app
+Fix: docker-compose restart (clears in-memory data)
+
+Issue: Want to modify vulnerabilities
+Fix: Edit app.py and rebuild (docker-compose up -d --build)
+
+================================================================================
+
+For detailed information, see README.md and RIFT-INTEGRATION.md
+
+Happy scanning! 🔍
