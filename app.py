@@ -57,10 +57,16 @@ email:
 DATABASE_URL=postgresql://mock_user:MockPassword123!@mock-db.example.com:5432/testdb
 API_KEY=MOCK_API_KEY_abc123xyz789
 API_SECRET=MOCK_SECRET_key_def456
-AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+AWS_ACCESS_KEY_ID=AKIA1234567890ABCD12
 AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-STRIPE_API_KEY=sk_test_4eC39HqLyjWDarhu1234567890
+STRIPE_API_KEY=sk_live_51234567890abcdefghijklmnopqrstuvwxyz
+GITHUB_TOKEN=ghp_1234567890abcdefghijklmnopqrstuvwxyz
+SLACK_BOT_TOKEN=xoxb-123456789012-123456789012-abcdefghijklmnopqrstuvwxyz12
+SLACK_WEBHOOK=https://hooks.slack.com/services/T123456789/B123456789/1234567890abcdefghijklmnop
+SENDGRID_API_KEY=SG.1234567890abcdefghijklmnopqrstuvwxyz
+MAILGUN_API_KEY=key-1234567890abcdefghijklmnopqrstuvwxyz
 JWT_SECRET=your-secret-key-here-12345
+PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC7W8zUhPeKfQRc\\nH6x7VsZbXwrXE7VL0HhEF7h0JZ2K1234567890abcdefghijklmnopqrstuvwxyzAB\\n-----END PRIVATE KEY-----
 """,
     'debug.log': """
 [2024-01-15 10:23:45] User login attempt: admin@test.com
@@ -418,6 +424,14 @@ def api_debug():
         'environment': 'test',
         'database_host': 'mock-db.example.com',
         'database_port': 5432,
+        'credentials': {
+            'github_token': 'ghp_1234567890abcdefghijklmnopqrstuvwxyz',
+            'slack_token': 'xoxb-123456789012-123456789012-abcdefghijklmnopqrstuvwxyz12',
+            'aws_access_key_id': 'AKIA1234567890ABCD12',
+            'aws_secret_access_key': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+            'stripe_api_key': 'sk_live_51234567890abcdefghijklmnopqrstuvwxyz',
+            'sendgrid_api_key': 'SG.1234567890abcdefghijklmnopqrstuvwxyz'
+        },
         'api_key': 'MOCK_API_KEY_abc123xyz789',
         'api_secret': 'MOCK_SECRET_key_def456',
         'debug_info': {
@@ -438,15 +452,36 @@ def api_config():
                 'host': 'mock-db.example.com',
                 'port': 5432,
                 'username': 'mock_user',
-                'password': 'MockPassword123!'
+                'password': 'MockPassword123!',
+                'url': 'postgresql://mock_user:MockPassword123!@mock-db.example.com:5432/testdb'
             },
             'api': {
+                'github_token': 'ghp_1234567890abcdefghijklmnopqrstuvwxyz',
+                'github_oauth': 'ghu_1234567890abcdefghijklmnopqrstuvwxyzAB',
+                'slack_token': 'xoxb-123456789012-123456789012-abcdefghijklmnopqrstuvwxyz12',
+                'slack_webhook': 'https://hooks.slack.com/services/T123456789/B123456789/1234567890abcdefghijklmnop',
                 'key': 'MOCK_API_KEY_abc123xyz789',
                 'secret': 'MOCK_SECRET_key_def456',
                 'endpoint': 'https://api.example.com'
             },
-            'security': {
+            'cloud': {
+                'aws_access_key_id': 'AKIA1234567890ABCD12',
+                'aws_secret_access_key': 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+                'aws_region': 'us-east-1'
+            },
+            'payment': {
+                'stripe_public_key': 'pk_live_51234567890abcdefghijklmnopqrstuvwxyz',
+                'stripe_secret_key': 'sk_live_51234567890abcdefghijklmnopqrstuvwxyz',
+                'stripe_webhook_secret': 'whsec_1234567890abcdefghijklmnopqrstuvwxyz'
+            },
+            'email': {
+                'sendgrid_api_key': 'SG.1234567890abcdefghijklmnopqrstuvwxyz',
+                'mailgun_api_key': 'key-1234567890abcdefghijklmnopqrstuvwxyz'
+            },
+            'auth': {
                 'jwt_secret': 'your-secret-key-here-12345',
+                'jwt_algorithm': 'HS256',
+                'private_key': '-----BEGIN PRIVATE KEY-----\\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC7W8zUhPeKfQRc\\nH6x7VsZbXwrXE7VL0HhEF7h0JZ2K1234567890abcdefghijklmnopqrstuvwxyzAB\\n-----END PRIVATE KEY-----',
                 'session_timeout': 3600
             }
         }
